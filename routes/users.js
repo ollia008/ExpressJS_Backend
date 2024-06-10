@@ -1,21 +1,34 @@
 const express = require('express')
 const router = express.Router()
 
+router.use(logger)
+
 router.get('/', (req, res) => {
+    console.log(req.query.name)
     res.send('User List')
 })
 
 router.get('/new', (req, res) => {
-    res.send('User New Form')
+    res.render("users/new")
 })
 
 router.post('/', (req, res) => {
-    res.send('Create User')
+    const isValid = false
+    if (isValid) {
+        users.push({firstName: req.body.firstName})
+        res.redirect(`/users/${users.length - 1}`)
+    } else {
+        console.log("error")
+        res.render('users/new', {firstName: req.body.firstName})
+    }
 })
 
 
 router
-.route('/:id').get((req, res) => {
+.route('/:id')
+.get((req, res) => {
+    // console.log(req.user)
+    console.log(req.user)
     res.send(`Get User With ID ${req.params.id}`)
 })
 .put((req, res) => {
@@ -25,13 +38,18 @@ router
     res.send(`Delete User With ID ${req.params.id}`)
 })
 
-const users = [{ name: "Alf" }, { name: "Per" }]
+const users = [{ name: "Alf" }, { name: "Didrizz" }]
 
 router.param("id", (req, res, next, id) => {
     req.user = users[id]
     // console.log(id)
     next()
 })
+
+function logger(req, res, next){
+    console.log(req.originalUrl)
+    next()
+}
 
 module.exports = router
 
